@@ -24,7 +24,7 @@
 
 ClosedCube_OPT3001 sensor_A;
 ClosedCube_OPT3001 sensor_B;
-ClosedCube_OPT3001 sensor_C;
+ClosedCube_OPT3001 sensor_C;   // NAFFED!!! //
 LSM9DS1 imu;
 
 #define SENSOR_ADDRESS_A 0x47  // ADDR - SCL 0x47(71)
@@ -33,8 +33,8 @@ LSM9DS1 imu;
 #define SENSOR_MAG_ADRESS 0x1E // 0x1C if SDO_M is low
 #define SENSOR_ACCEL_GYRO_ADRESS 0x6B // 0x6A if SDO_AG is low
 
-#define PRINT_RAW // parameter in void print---()
-//#define PRINT_CALCULATED // parameter in void print---()
+//#define PRINT_RAW // parameter in void print---()
+#define PRINT_CALCULATED // parameter in void print---()
 
 #define PRINT_SPEED 1000 //250ms between prints
 
@@ -50,7 +50,8 @@ void printError(String text, OPT3001_ErrorCode error);
 
 float getValue(OPT3001 result);
 void pError(String text, OPT3001 result);
-void ratio(float senx, float seny,float senz, float &ratio_yx, float &ratio_zx);
+void ratio_yx(float senx, float seny, float &yx);
+void ratio_zx(float senx, float senz, float &zx);
 void angle(float x, float y, float &angle_yx, float &angle_zx);
 
 void printGyro();
@@ -129,11 +130,12 @@ void loop()
         pError("Sensor C", result_C);
     }
    
-    float ratio_yx, ratio_zx;
-    ratio(valx, valy, valz, ratio_yx, ratio_zx);
+    float yx, zx;
+    ratio_yx(valx, valy, yx);
+    ratio_zx(valx, valz, zx);
 
     float angle_yx, angle_zx;
-    angle(ratio_yx, ratio_zx, angle_yx, angle_zx);
+    angle(yx, zx, angle_yx, angle_zx);
 
     /*IMU*/
     if ( imu.gyroAvailable())
@@ -271,11 +273,16 @@ void pError(String text, OPT3001 result)
 }
 
 // ==============================================================================
-void ratio(float senx, float seny, float senz, float &ratio_yx, float &ratio_zx) 
+void ratio_yx(float senx, float seny, float &yx) 
 {
-    ratio_yx = seny / senx;
-    ratio_zx = senz / senx;
+    yx = seny / senx;
 }
+
+void ratio_zx(float senx, float senz, float &zx) 
+{
+    zx = senz / senx;
+}
+
 
 // ===============================================================================
 void angle(float x, float y, float &angle_yx, float &angle_zx)
@@ -343,6 +350,14 @@ void printAccel()
 }
 
 // ==============================================================================
+float AbsoluteMag(float x, float y, float z)
+{
+    float AbsMag = pow((imu.calcMag(x)*100)*(imu.calcMag(x)*100)+ 
+                       (imu.calcMag(y)*100)*(imu.calcMag(y)*100)+
+                       (imu.calcMag(z)*100)*(imu.calcMag(z)*100), 0.5);
+    return AbsMag;
+}
+
 void printMag()
 {
     // Now we can use the mx, my, and mz variables as we please.
@@ -353,12 +368,14 @@ void printMag()
         // If you want to print calculated values, you can use the
         // calcMag helper function to convert a raw ADC value to
         // Gauss. Give the function the value that you want to convert.
-        Serial.print(imu.calcMag(imu.mx), 2);
+        Serial.print(imu.calcMag(imu.mx)*100, 2);
         Serial.print(", ");
-        Serial.print(imu.calcMag(imu.my), 2);
+        Serial.print(imu.calcMag(imu.my)*100, 2);
         Serial.print(", ");
-        Serial.print(imu.calcMag(imu.mz), 2);
-        Serial.println(" gauss");
+        Serial.print(imu.calcMag(imu.mz)*100, 2);
+        Serial.println(" microTesla");
+        Serial.print("Abs: ");
+        Serial.print(AbsoluteMag(imu.mx,imu.my,imu.my), 2);
     #elif defined PRINT_RAW
         Serial.print(imu.mx);
         Serial.print(", ");
