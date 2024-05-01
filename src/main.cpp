@@ -33,9 +33,9 @@ void printError(String text, OPT3001_ErrorCode error);
 
 float getValue(OPT3001 result);
 void pError(String text, OPT3001 result);
-void ratio_yx(float senx, float seny, float &yx);
-void ratio_zx(float senx, float senz, float &zx);
-void angle(float x, float y, float &angle_yx, float &angle_zx);
+
+float angle_BA(float senA, float senB);
+float angle_CA(float senA, float senC);
 
 void printGyro();
 void printMag();
@@ -60,19 +60,19 @@ void setup()
     Serial.println(sensor_A.readDeviceID());
 
     configureSensor(sensor_A);
-    Serial.println('Sensor A');
+    Serial.println("Sensor A");
     printResult("High-Limit", sensor_A.readHighLimit());
     printResult("Low-Limit", sensor_A.readLowLimit());
     Serial.println("----"); 
 
     configureSensor(sensor_B);
-    Serial.println('Sensor B');
+    Serial.println("Sensor B");
     printResult("High-Limit", sensor_B.readHighLimit());
     printResult("Low-Limit", sensor_B.readLowLimit());
     Serial.println("----");
 
     configureSensor(sensor_C);
-    Serial.println('Sensor C');
+    Serial.println("Sensor C");
     printResult("High-Limit", sensor_C.readHighLimit());
     printResult("Low-Limit", sensor_C.readLowLimit());
     Serial.println("----");     
@@ -94,31 +94,61 @@ void loop()
     delay(10);
     OPT3001 result_C = sensor_C.readResult();
 
-    float valx = getValue(result_A);
-    float valy = getValue(result_B);
-    float valz = getValue(result_C);
+    float valA = getValue(result_A);
+    float valB = getValue(result_B);
+    float valC = getValue(result_C);
 
-    if (valx == -1) 
+// Beta start
+
+    if (valA != -1)
+    {
+        if (valB != -1){
+            float theta = angle_BA(valA, valB);
+            Serial.print("Angle between sensor A and B: ");
+            Serial.print(theta);
+            Serial.print(" rad, ");
+        }else {
+            pError("Sensor B", result_B);
+        }
+        if (valC != -1){
+            float psi = angle_CA(valA, valC);
+            Serial.print("Angle between sensor A and C: ");
+            Serial.print(psi);
+            Serial.println(" rad"); 
+        }else {
+            pError("Sensor C", result_C);
+        }
+    }
+    else
+    {
+        pError("Sensor A", result_A);
+    }
+
+// Beta end
+    if (valA == -1) 
     {
         pError("Sensor A", result_A);
     }
     
-    if (valy == -1) 
+    if (valB == -1) 
     {
         pError("Sensor B", result_B);
     }
 
-    if (valz == -1) 
+    if (valC == -1) 
     {
         pError("Sensor C", result_C);
     }
    
-    float yx, zx;
-    ratio_yx(valx, valy, yx);
-    ratio_zx(valx, valz, zx);
+    float theta = angle_BA(valA, valB);
+    Serial.print("angle_BA: ");
+    Serial.print(theta);
+    Serial.print(" rad,  ");
+    float psi = angle_CA(valA, valC);
+    Serial.print("angle_CA: ");
+    Serial.print(psi);
+    Serial.println(" rad");
 
-    float angle_yx, angle_zx;
-    angle(yx, zx, angle_yx, angle_zx);
 
     /*IMU*/
     if ( imu.gyroAvailable())
@@ -256,30 +286,17 @@ void pError(String text, OPT3001 result)
 }
 
 // ==============================================================================
-void ratio_yx(float senx, float seny, float &yx) 
+float angle_BA(float senA, float senB)
 {
-    yx = seny / senx;
+    float theta = PI / 4 - atan(senB / senA);
+    return theta;
 }
 
-void ratio_zx(float senx, float senz, float &zx) 
+float angle_CA(float senA, float senC)
 {
-    zx = senz / senx;
+    float psi = PI / 4 - atan(senC / senA);
+    return psi;
 }
-
-
-// ===============================================================================
-void angle(float x, float y, float &angle_yx, float &angle_zx)
-{
-    angle_yx = PI / 4 - atan(x);
-    angle_zx = PI / 4 - atan(y);
-    Serial.print("angle_yx: ");
-    Serial.print(angle_yx);
-    Serial.print(" rad,  ");
-    Serial.print("angle_zx: ");
-    Serial.print(angle_zx);
-    Serial.println(" rad");    
-}
-
 /* IMU */
 void printGyro()
 {
