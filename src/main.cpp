@@ -122,6 +122,7 @@ void loop()
     else
     {
         pError("Sensor A", result_A);
+        Serial.println("System not valid, Sensor A privatol");
     }
 
 // Beta end
@@ -375,7 +376,7 @@ void printMag()
         Serial.print(imu.calcMag(imu.mz)*100, 2);
         Serial.println(" microTesla");
         Serial.print("Abs: ");
-        Serial.print(AbsoluteMag(imu.mx,imu.my,imu.my), 2);
+        Serial.println(AbsoluteMag(imu.mx,imu.my,imu.my), 2);
     #elif defined PRINT_RAW
         Serial.print(imu.mx);
         Serial.print(", ");
