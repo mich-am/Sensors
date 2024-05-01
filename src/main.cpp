@@ -1,20 +1,3 @@
-/*******************************************************************************
-* AmbaSat-1 Sensor 04 - OPT3001
-* 5th February 2020
-* Version 1.0
-* Filename: main.cpp
-*
-* Copyright (c) 2022 AmbaSat Ltd
-* https://ambasat.com
-*
-* Licensed under Creative Commons Attribution-ShareAlike 3.0
-*
-* Use this application to test the circuitry of your AmbaSat-1 Satellite and Sensor 04 - OPT3001
-* Once the code is uploaded to your AmbaSat-1 board, view the debug output to confirm readings
-*
-* Based on code from ClosedCube
-* ******************************************************************************/
-
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
