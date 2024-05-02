@@ -17,10 +17,8 @@ LSM9DS1 imu;
 #define SENSOR_ACCEL_GYRO_ADRESS 0x6B // 0x6A if SDO_AG is low
 //#define PRINT_RAW // parameter in void print---()
 #define PRINT_CALCULATED // parameter in void print---()
-#define PRINT_SPEED 1000 //250ms between prints
 #define DECLINATION 0.016 // in Newcastle upon time 2024
 #define NUM_ITER 10
-static unsigned long lastprint =0; // tracks print time
 int iterationCount = 0;
 
 /* Sun Sensor */
@@ -113,20 +111,15 @@ void loop()
     {
         imu.readMag();
     }
-    if ((lastprint + PRINT_SPEED) < millis())
-    {
-        printGyro();
-        printAccel();
-        printMag();
 
-        printAttitude(imu.ax, imu.ay, imu.az, -imu.my, -imu.my, imu.mz);
-        Serial.println();
+    printGyro();
+    printAccel();
+    printMag();
 
-        lastprint = millis();
-
-    }
+    printAttitude(imu.ax, imu.ay, imu.az, -imu.my, -imu.my, imu.mz);
+    Serial.println();
     iterationCount++;
-    if (iterationCount >= NUM_ITER) {while (true){}}
+    //if (iterationCount >= NUM_ITER) {while (true){}}
 
     delay(500);
 
@@ -136,12 +129,12 @@ void loop()
 /* Sun Sensor */
 void OPT3001_Setup()
 {
-    Serial.print("OPT3001 Manufacturer ID");
+    Serial.print("OPT3001 Manufacturer ID: ");
     Serial.println(sensor_A.readManufacturerID());
     Serial.print("OPT3001 Device ID");
     Serial.println(sensor_A.readDeviceID());
 
-    configureSensor(sensor_A);
+    configureSensor(sensor_A); 
     Serial.println("Sensor A");
     printResult("High-Limit", sensor_A.readHighLimit());
     printResult("Low-Limit", sensor_A.readLowLimit());
@@ -233,11 +226,17 @@ void printResult(String text, OPT3001 result)
 void printLux(float valA, float valB, float valC)
 {
     Serial.println("Sensor A, Sensor B, Sensor C ");
-    Serial.print(valA);
+    if (valA != -1){
+        Serial.print(valA);
+    }else{Serial.print("Error");}
     Serial.print(", ");
-    Serial.print(valB);
+    if (valB != -1){
+       Serial.print(valB);
+    }else{Serial.print("Error");}
     Serial.print(", ");
-    Serial.print(valC);
+    if (valC != -1){
+       Serial.print(valC);
+    }else{Serial.print("Error");}
     Serial.println(" Lux");
 }
 void printError(String text, OPT3001_ErrorCode error) 
