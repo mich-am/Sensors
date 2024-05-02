@@ -18,8 +18,7 @@ LSM9DS1 imu;
 //#define PRINT_RAW // parameter in void print---()
 #define PRINT_CALCULATED // parameter in void print---()
 #define DECLINATION 0.016 // in Newcastle upon time 2024
-#define NUM_ITER 10
-int iterationCount = 0;
+
 
 /* Sun Sensor */
 void OPT3001_Setup();
@@ -80,16 +79,12 @@ void loop()
             Serial.print("Angle between sensor A and B: ");
             Serial.print(theta);
             Serial.println(" Degrees. ");
-        }else {
-            pError("Sensor B", result_B);
         }
         if (valC != -1){
             float psi = angle_CA(valA, valC);
             Serial.print("Angle between sensor A and C: ");
             Serial.print(psi);
             Serial.println(" Degrees."); 
-        }else {
-            pError("Sensor C", result_C);
         }
     }
     else
@@ -99,30 +94,17 @@ void loop()
     }
 
     /*IMU*/
-    if ( imu.gyroAvailable())
-    {
-        imu.readGyro();
-    }
-    if ( imu.accelAvailable())
-    {
-        imu.readAccel();
-    }
     if ( imu.magAvailable())
     {
         imu.readMag();
     }
 
-    printGyro();
-    printAccel();
     printMag();
 
     printAttitude(imu.ax, imu.ay, imu.az, -imu.my, -imu.my, imu.mz);
     Serial.println();
-    iterationCount++;
-    //if (iterationCount >= NUM_ITER) {while (true){}}
 
     delay(500);
-
 }
 
 // ==============================================================================
