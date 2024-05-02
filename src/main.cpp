@@ -19,7 +19,7 @@ LSM9DS1 imu;
 #define PRINT_CALCULATED // parameter in void print---()
 #define PRINT_SPEED 1000 //250ms between prints
 #define DECLINATION 0.016 // in Newcastle upon time 2024
-
+#define NUM_ITER 10
 static unsigned long lastprint =0; // tracks print time
 
 
@@ -81,7 +81,7 @@ void loop()
             float theta = angle_BA(valA, valB);
             Serial.print("Angle between sensor A and B: ");
             Serial.print(theta);
-            Serial.print(" Degree, ");
+            Serial.println(" Degrees. ");
         }else {
             pError("Sensor B", result_B);
         }
@@ -89,7 +89,7 @@ void loop()
             float psi = angle_CA(valA, valC);
             Serial.print("Angle between sensor A and C: ");
             Serial.print(psi);
-            Serial.println(" Degree"); 
+            Serial.println(" Degrees."); 
         }else {
             pError("Sensor C", result_C);
         }
@@ -227,17 +227,15 @@ void printResult(String text, OPT3001 result)
 	  	printError(text,result.error);
 	}
 }
-void printlux(float valA, float valB, float valC)
+void printLux(float valA, float valB, float valC)
 {
-    Serial.print('Sensor A: ');
+    Serial.println("Sensor A, Sensor B, Sensor C ");
     Serial.print(valA);
-    Serial.print(', ');
-    Serial.print('Sensor B: ');
+    Serial.print(", ");
     Serial.print(valB);
-    Serial.print(', ');
-    Serial.print('Sensor C: ');
+    Serial.print(", ");
     Serial.print(valC);
-    Serial.println(' Lux');
+    Serial.println(" Lux");
 }
 void printError(String text, OPT3001_ErrorCode error) 
 {
