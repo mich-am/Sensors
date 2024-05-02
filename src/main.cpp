@@ -21,7 +21,7 @@ LSM9DS1 imu;
 #define DECLINATION 0.016 // in Newcastle upon time 2024
 #define NUM_ITER 10
 static unsigned long lastprint =0; // tracks print time
-
+int iterationCount = 0;
 
 /* Sun Sensor */
 void OPT3001_Setup();
@@ -125,6 +125,9 @@ void loop()
         lastprint = millis();
 
     }
+    iterationCount++;
+    if (iterationCount >= NUM_ITER) {while (true){}}
+
     delay(500);
 
 }
