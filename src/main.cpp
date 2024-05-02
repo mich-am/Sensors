@@ -73,10 +73,7 @@ void loop()
     float valB = getValue(result_B);
     float valC = getValue(result_C);
 
-
     printLux(valA, valB, valC);
-
-// Beta start
 
     if (valA != -1)
     {
@@ -102,32 +99,6 @@ void loop()
         pError("Sensor A", result_A);
         Serial.println("System not valid, Sensor A privatol");
     }
-
-// Beta end
-    if (valA == -1) 
-    {
-        pError("Sensor A", result_A);
-    }
-    
-    if (valB == -1) 
-    {
-        pError("Sensor B", result_B);
-    }
-
-    if (valC == -1) 
-    {
-        pError("Sensor C", result_C);
-    }
-   
-    float theta = angle_BA(valA, valB);
-    Serial.print("angle_BA: ");
-    Serial.print(theta);
-    Serial.print(" rad,  ");
-    float psi = angle_CA(valA, valC);
-    Serial.print("angle_CA: ");
-    Serial.print(psi);
-    Serial.println(" rad");
-
 
     /*IMU*/
     if ( imu.gyroAvailable())
