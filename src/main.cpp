@@ -62,7 +62,7 @@ void setup()
 // ==============================================================================
 void loop()
 {
-    if (millis() - starttime >= 30000) {return;} //timer
+    //if (millis() - starttime >= 30000) {return;} //timer
 
     /*sun sensor*/
 	OPT3001 result_A = sensor_A.readResult();
