@@ -37,6 +37,8 @@ void printMag();
 //void printAccel();
 //void printAttitude(float ax, float ay, float az, float mx, float my, float mz);
 
+unsigned long starttime;  //timer
+
 // ==============================================================================
 void setup() 
 {
@@ -54,11 +56,14 @@ void setup()
         Serial.println("Failed to communicate with IMU");
         while (1);
     }
+    starttime = millis(); // timer
 }
 
 // ==============================================================================
 void loop()
 {
+    if (millis() - starttime >= 30000) {return;} //timer
+
     /*sun sensor*/
 	OPT3001 result_A = sensor_A.readResult();
     delay(10);
@@ -257,7 +262,7 @@ float angle_CA(float senA, float senC)
     return psi;
 }
 /* IMU */
-//void printGyro()
+void printGyro()
 {
     // Now we can use the gx, gy, and gz variables as we please.
     // Either print them as raw ADC values, or calculated in DPS.
@@ -281,7 +286,7 @@ float angle_CA(float senA, float senC)
         Serial.println(imu.gz);
     #endif
 }
-//void printAccel()
+void printAccel()
 {
     // Now we can use the ax, ay, and az variables as we please.
     // Either print them as raw ADC values, or calculated in g's.
@@ -338,7 +343,7 @@ void printMag()
         Serial.println(imu.mz);
     #endif
 }
-//void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
+void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
 {
     /* Calculate pitch, roll, and heading.
     Pitch/roll calculations taken from this app note:
