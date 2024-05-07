@@ -8,3 +8,5 @@
 .vscode/launch.json
 .vscode/settings.json
 .vscode/ipch
+main.txt
+results.txt
