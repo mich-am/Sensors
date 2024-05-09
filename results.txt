@@ -1,7 +1,0 @@
-Sensor C: [ERROR] Code #-20
-angle_yx: -0.38 rad,  angle_zx: 0.79 rad
-G: -68, 71, 260
-A: -161, -212, 16660
-M: 632, 124, -3071
-Pitch, Roll: 0.55, -0.73
-Heading: -135.02

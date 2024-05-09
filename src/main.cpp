@@ -32,10 +32,10 @@ float angle_BA(float senA, float senB);
 float angle_CA(float senA, float senC);
 
 /* ISU */
-//void printGyro();
+void printGyro();
 void printMag();
-//void printAccel();
-//void printAttitude(float ax, float ay, float az, float mx, float my, float mz);
+void printAccel();
+void printAttitude(float ax, float ay, float az, float mx, float my, float mz);
 
 unsigned long starttime;  //timer
 
@@ -62,7 +62,7 @@ void setup()
 // ==============================================================================
 void loop()
 {
-    if (millis() - starttime >= 30000) 
+    if (millis() - starttime >= 60000) // milliseconds  
     {
         while(true);
     } //timer
@@ -108,8 +108,7 @@ void loop()
     }
 
     printMag();
-
-    //printAttitude(imu.ax, imu.ay, imu.az, -imu.my, -imu.my, imu.mz);
+    printAttitude(imu.ax, imu.ay, imu.az, -imu.my, -imu.my, imu.mz);
     Serial.println();
 
     delay(500);
@@ -215,7 +214,7 @@ void printResult(String text, OPT3001 result)
 }
 void printLux(float valA, float valB, float valC)
 {
-    Serial.println("Sensor A, Sensor B, Sensor C ");
+    //Serial.println("Sensor A, Sensor B, Sensor C ");
     if (valA != -1){
         Serial.print(valA);
     }else{Serial.print("Error");}
